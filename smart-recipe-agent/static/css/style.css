@@ -1,0 +1,778 @@
+/* style.css */
+/* Custom premium design system for the Smart Recipe Agent */
+
+:root {
+    /* Color Palette - HSL Tailored for a modern, appetizing feel */
+    --primary: hsl(25, 36%, 49%);        /* Clay/terracotta (#A9744F) */
+    --primary-light: hsl(25, 36%, 59%);  /* Lighter clay/terracotta */
+    --primary-bg: hsl(25, 30%, 96%);     /* Very light clay/terracotta for backgrounds */
+    
+    --accent: hsl(28, 90%, 52%);         /* Warm carrot/amber orange */
+    --accent-light: hsl(28, 90%, 96%);   /* Light accent background */
+    --accent-dark: hsl(28, 90%, 42%);
+    
+    --danger: hsl(354, 70%, 54%);        /* Crimson red for missing ingredients */
+    --danger-bg: hsl(354, 70%, 96%);
+    
+    --text-main: hsl(210, 24%, 16%);     /* Dark slate for high contrast readability */
+    --text-muted: hsl(210, 12%, 44%);    /* Cool gray for subtexts */
+    --text-light: hsl(0, 0%, 100%);      /* Pure white text */
+    
+    --bg-page: hsl(210, 20%, 98%);       /* Clean, soft off-white background */
+    --bg-card: hsl(0, 0%, 100%);         /* Pure white for card contrast */
+    
+    --border-color: hsl(210, 14%, 89%);  /* Soft line breaks */
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.06);
+    --hover-shadow: 0 16px 48px 0 rgba(31, 38, 135, 0.12);
+    
+    --radius-sm: 8px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-page);
+    color: var(--text-main);
+    line-height: 1.6;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding: 20px 0;
+}
+
+/* Header Section */
+.app-header {
+    text-align: center;
+    padding: 40px 20px 20px 20px;
+    background: linear-gradient(135deg, hsl(25, 30%, 94%), hsl(28, 70%, 95%));
+    border-radius: var(--radius-lg);
+    box-shadow: var(--glass-shadow);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 12px;
+}
+
+.logo-icon {
+    font-size: 3rem;
+    animation: cook-bounce 2s ease-in-out infinite;
+}
+
+.app-header h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: var(--primary);
+    letter-spacing: -0.5px;
+    background: linear-gradient(to right, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto;
+    font-weight: 500;
+}
+
+/* Main Content Wrapper */
+.main-content {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+/* Glassmorphism Sections */
+.input-section, .results-section {
+    background-color: var(--bg-card);
+    padding: 40px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--glass-shadow);
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+}
+
+.input-section:hover {
+    box-shadow: var(--hover-shadow);
+}
+
+.input-section h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+}
+
+.instruction-text {
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin-bottom: 24px;
+}
+
+/* Custom Input Field and Add Button */
+.input-row {
+    margin-bottom: 24px;
+}
+
+.input-wrapper {
+    display: flex;
+    gap: 12px;
+}
+
+#ingredient-input {
+    flex: 1;
+    font-family: inherit;
+    font-size: 1.05rem;
+    padding: 16px 24px;
+    border-radius: var(--radius-md);
+    border: 2px solid var(--border-color);
+    background-color: hsl(210, 20%, 99%);
+    color: var(--text-main);
+    outline: none;
+    transition: var(--transition);
+}
+
+#ingredient-input:focus {
+    border-color: var(--primary-light);
+    background-color: var(--text-light);
+    box-shadow: 0 0 0 4px rgba(169, 116, 79, 0.12);
+}
+
+/* Button Styling */
+.btn {
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 14px 28px;
+    border-radius: var(--radius-md);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: var(--text-light);
+    box-shadow: 0 4px 14px rgba(169, 116, 79, 0.25);
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: var(--primary-light);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(169, 116, 79, 0.35);
+}
+
+.btn-primary:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-primary:disabled {
+    background-color: hsl(210, 10%, 86%);
+    color: hsl(210, 10%, 60%);
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background-color: hsl(210, 16%, 93%);
+    color: var(--text-main);
+}
+
+.btn-secondary:hover {
+    background-color: hsl(210, 14%, 86%);
+}
+
+.btn-text {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-weight: 500;
+    padding: 8px 16px;
+}
+
+.btn-text:hover {
+    color: var(--danger);
+    text-decoration: underline;
+}
+
+.btn-large {
+    padding: 18px 36px;
+    font-size: 1.1rem;
+}
+
+.action-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 10px;
+}
+
+/* Ingredient Tags container */
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 24px;
+    min-height: 48px;
+    padding: 12px;
+    background-color: hsl(210, 20%, 97%);
+    border-radius: var(--radius-md);
+    border: 1px dashed var(--border-color);
+}
+
+.tags-container:empty::before {
+    content: "No ingredients added yet. Try 'garlic' or 'tomatoes'.";
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+/* Ingredient Tag item */
+.tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--primary-bg);
+    color: var(--primary);
+    border: 1px solid hsl(25, 30%, 85%);
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    animation: pop-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.tag-remove {
+    cursor: pointer;
+    font-size: 1.1rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: hsl(25, 25%, 60%);
+    transition: var(--transition);
+}
+
+.tag-remove:hover {
+    color: var(--danger);
+}
+
+/* Loading Spinner - Cooking Pan Animation */
+.loading-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px 20px;
+    background-color: var(--bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--glass-shadow);
+    border: 1px solid var(--border-color);
+    animation: fade-in 0.4s ease-out;
+}
+
+.loader-content {
+    text-align: center;
+    max-width: 450px;
+}
+
+.loader-content h3 {
+    font-size: 1.4rem;
+    margin-bottom: 8px;
+    color: var(--primary);
+}
+
+.loader-content p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+/* CSS Pan & Cooking bubbles */
+.pan-loader {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 20px auto;
+}
+
+.pan {
+    position: absolute;
+    bottom: 25px;
+    left: 20px;
+    width: 60px;
+    height: 18px;
+    background-color: var(--text-main);
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    animation: pan-shake 0.8s ease-in-out infinite alternate;
+}
+
+.pan::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    right: -30px;
+    width: 35px;
+    height: 6px;
+    background-color: var(--text-main);
+    border-radius: 3px;
+    transform: rotate(-10deg);
+    transform-origin: left center;
+}
+
+.cooking-bubble {
+    position: absolute;
+    background-color: var(--accent);
+    border-radius: 50%;
+    opacity: 0;
+    bottom: 45px;
+}
+
+.bubble-1 {
+    width: 8px;
+    height: 8px;
+    left: 35px;
+    animation: bubble-rise 1.5s infinite 0.2s;
+}
+
+.bubble-2 {
+    width: 12px;
+    height: 12px;
+    left: 48px;
+    animation: bubble-rise 1.8s infinite 0.6s;
+}
+
+.bubble-3 {
+    width: 6px;
+    height: 6px;
+    left: 60px;
+    animation: bubble-rise 1.3s infinite 0.9s;
+}
+
+/* Error Banner styling */
+.error-banner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background-color: var(--danger-bg);
+    border: 1px solid hsl(354, 70%, 90%);
+    border-radius: var(--radius-md);
+    padding: 16px 24px;
+    margin-bottom: 24px;
+    animation: slide-down 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.error-icon {
+    font-size: 1.4rem;
+}
+
+.error-message {
+    flex: 1;
+    color: var(--danger);
+    font-weight: 600;
+}
+
+.close-error-btn {
+    background: none;
+    border: none;
+    font-size: 1.6rem;
+    cursor: pointer;
+    color: hsl(354, 30%, 60%);
+    transition: var(--transition);
+}
+
+.close-error-btn:hover {
+    color: var(--danger);
+}
+
+/* Results Display styles */
+.results-header {
+    margin-bottom: 30px;
+}
+
+.results-header h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.results-header p {
+    color: var(--text-muted);
+}
+
+.recipes-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+}
+
+/* Recipe Card Styling */
+.recipe-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    animation: fade-in 0.6s ease-out;
+}
+
+.recipe-card:hover {
+    box-shadow: var(--hover-shadow);
+    transform: translateY(-4px);
+    border-color: hsl(25, 30%, 85%);
+}
+
+.recipe-card-header {
+    padding: 30px;
+    background: linear-gradient(to right, var(--primary-bg), hsl(0, 0%, 100%));
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.recipe-title-wrapper {
+    flex: 1;
+    min-width: 250px;
+}
+
+.recipe-card h3 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+}
+
+.recipe-meta {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.meta-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.badge-calories {
+    background-color: var(--accent-light);
+    color: var(--accent-dark);
+    border: 1px solid hsl(28, 80%, 90%);
+}
+
+.badge-source {
+    background-color: hsl(210, 16%, 93%);
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: var(--transition);
+    border: 1px solid hsl(210, 14%, 86%);
+}
+
+.badge-source:hover {
+    background-color: var(--text-main);
+    color: var(--text-light);
+}
+
+/* Ingredients Grid Columns */
+.ingredients-columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    padding: 30px;
+    border-bottom: 1px solid var(--border-color);
+    background-color: hsl(210, 20%, 99%);
+}
+
+.ingredients-col {
+    background-color: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    border: 1px solid var(--border-color);
+}
+
+.col-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.col-header h4 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Kitchen Box Styling (Have) */
+.kitchen-col {
+    border-left: 4px solid var(--primary);
+}
+
+.kitchen-col .col-header h4 {
+    color: var(--primary);
+}
+
+/* Shopping Box Styling (Need) */
+.shopping-col {
+    border-left: 4px solid var(--danger);
+}
+
+.shopping-col .col-header h4 {
+    color: var(--danger);
+}
+
+/* Copy button for Shopping List */
+.btn-copy {
+    background: none;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+}
+
+.btn-copy:hover {
+    background-color: var(--danger-bg);
+    color: var(--danger);
+    border-color: hsl(354, 70%, 90%);
+}
+
+.ingredient-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ingredient-item {
+    font-size: 0.95rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.item-check {
+    color: var(--primary);
+    font-weight: bold;
+}
+
+.item-cross {
+    color: var(--danger);
+    font-weight: bold;
+}
+
+/* Instructions Details List */
+.instructions-wrapper {
+    padding: 30px;
+}
+
+.instructions-wrapper h4 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 18px;
+    color: var(--text-main);
+}
+
+.instructions-list {
+    list-style: none;
+    counter-reset: steps-counter;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.instruction-step {
+    position: relative;
+    padding-left: 45px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: var(--transition);
+    user-select: none;
+}
+
+.instruction-step::before {
+    counter-increment: steps-counter;
+    content: counter(steps-counter);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 28px;
+    height: 28px;
+    background-color: hsl(210, 16%, 93%);
+    color: var(--text-muted);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: var(--transition);
+}
+
+.instruction-step:hover::before {
+    background-color: var(--primary-bg);
+    color: var(--primary);
+}
+
+/* Completed Step state (when user clicks instruction step) */
+.instruction-step.completed {
+    color: var(--text-muted);
+    text-decoration: line-through;
+}
+
+.instruction-step.completed::before {
+    background-color: var(--primary);
+    color: var(--text-light);
+    content: "✓";
+}
+
+/* Footer style */
+.app-footer {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Animations declarations */
+@keyframes cook-bounce {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+}
+
+@keyframes pan-shake {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(6deg) translateX(3px); }
+}
+
+@keyframes bubble-rise {
+    0% {
+        transform: translateY(0) scale(0.6);
+        opacity: 0;
+    }
+    30% {
+        opacity: 0.8;
+    }
+    90% {
+        opacity: 0.4;
+    }
+    100% {
+        transform: translateY(-40px) scale(1.1);
+        opacity: 0;
+    }
+}
+
+@keyframes pop-in {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fade-in {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-down {
+    0% { transform: translateY(-10px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+/* Responsive Media Queries */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    .app-container {
+        gap: 24px;
+    }
+    
+    .app-header {
+        padding: 24px 15px;
+    }
+    
+    .app-header h1 {
+        font-size: 2.1rem;
+    }
+    
+    .input-section, .results-section {
+        padding: 24px 16px;
+    }
+    
+    .input-wrapper {
+        flex-direction: column;
+    }
+    
+    #add-btn {
+        width: 100%;
+        padding: 16px;
+    }
+    
+    .recipe-card-header {
+        padding: 20px;
+    }
+    
+    .ingredients-columns {
+        padding: 20px;
+        grid-template-columns: 1fr;
+    }
+    
+    .instructions-wrapper {
+        padding: 20px;
+    }
+}

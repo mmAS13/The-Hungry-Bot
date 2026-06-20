@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Hungry Bot 🍳 - AI-Powered Recipe Finder</title>
+    <meta name="description" content="Discover real recipes based on ingredients you already have at home. Includes custom step-by-step instructions, shopping lists, and calorie counts.">
+    <!-- Import Premium Fonts from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Link to custom styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Page Header -->
+        <header class="app-header">
+            <div class="logo">
+                <span class="logo-icon">🍳</span>
+                <h1 id="app-title">The Hungry Bot 🍳</h1>
+            </div>
+            <p class="subtitle">Enter the ingredients you have at home, and let our AI agent search the web to find real, delicious recipes for you!</p>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="main-content">
+            <!-- Ingredient Input Section -->
+            <section class="input-section" id="ingredient-entry-section">
+                <h2>What's in your kitchen?</h2>
+                <p class="instruction-text">Type an ingredient (e.g., "chicken", "garlic", "pasta") and press <strong>Enter</strong> or click <strong>Add</strong>.</p>
+                
+                <div class="input-row">
+                    <div class="input-wrapper">
+                        <input type="text" id="ingredient-input" placeholder="Add an ingredient..." autocomplete="off">
+                        <button type="button" id="add-btn" class="btn btn-secondary">Add</button>
+                    </div>
+                </div>
+
+                <!-- Tags Container -->
+                <div class="tags-container" id="tags-container" aria-label="Ingredients list">
+                    <!-- Ingredients will be added here dynamically as tags -->
+                </div>
+
+                <div class="action-row">
+                    <button type="button" id="find-recipes-btn" class="btn btn-primary btn-large" disabled>
+                        Find Recipes
+                    </button>
+                    <button type="button" id="clear-all-btn" class="btn btn-text" style="display: none;">Clear All</button>
+                </div>
+            </section>
+
+            <!-- Loading State -->
+            <div class="loading-wrapper" id="recipe-loader" style="display: none;">
+                <div class="loader-content">
+                    <div class="pan-loader">
+                        <div class="pan"></div>
+                        <div class="cooking-bubble bubble-1"></div>
+                        <div class="cooking-bubble bubble-2"></div>
+                        <div class="cooking-bubble bubble-3"></div>
+                    </div>
+                    <h3>Consulting the Chef...</h3>
+                    <p>Searching the web for real recipes using Google Search grounding and calculating ingredients...</p>
+                </div>
+            </div>
+
+            <!-- Error Notification Banner -->
+            <div class="error-banner" id="error-banner" style="display: none;">
+                <span class="error-icon">⚠️</span>
+                <span class="error-message" id="error-message">Something went wrong. Please try again.</span>
+                <button class="close-error-btn" id="close-error-btn">&times;</button>
+            </div>
+
+            <!-- Results Section -->
+            <section class="results-section" id="results-section" style="display: none;">
+                <div class="results-header">
+                    <h2>Found Recipes</h2>
+                    <p>Here are real recipes matching your ingredients:</p>
+                </div>
+                
+                <!-- Recipe Cards Grid -->
+                <div class="recipes-grid" id="recipes-grid">
+                    <!-- Recipes will be inserted here dynamically -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>The Hungry Bot 🍳 &copy; 2026. Powered by Python, Flask, and the Gemini API.</p>
+        </footer>
+    </div>
+
+    <!-- Link to Frontend Interactive Logic -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

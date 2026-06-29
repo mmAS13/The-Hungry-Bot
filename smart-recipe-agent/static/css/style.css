@@ -2,34 +2,39 @@
 /* Custom premium design system for the Smart Recipe Agent */
 
 :root {
-    /* Color Palette - HSL Tailored for a modern, appetizing feel */
+    /* Color Palette - original clay/terracotta theme, refined */
     --primary: hsl(25, 36%, 49%);        /* Clay/terracotta (#A9744F) */
-    --primary-light: hsl(25, 36%, 59%);  /* Lighter clay/terracotta */
-    --primary-bg: hsl(25, 30%, 96%);     /* Very light clay/terracotta for backgrounds */
-    
+    --primary-light: hsl(25, 36%, 59%);
+    --primary-bg: hsl(25, 30%, 96%);
+
     --accent: hsl(28, 90%, 52%);         /* Warm carrot/amber orange */
-    --accent-light: hsl(28, 90%, 96%);   /* Light accent background */
+    --accent-light: hsl(28, 90%, 96%);
     --accent-dark: hsl(28, 90%, 42%);
-    
+
+    --success: hsl(150, 45%, 38%);
+    --success-bg: hsl(150, 45%, 95%);
+
     --danger: hsl(354, 70%, 54%);        /* Crimson red for missing ingredients */
     --danger-bg: hsl(354, 70%, 96%);
-    
+
     --text-main: hsl(210, 24%, 16%);     /* Dark slate for high contrast readability */
     --text-muted: hsl(210, 12%, 44%);    /* Cool gray for subtexts */
     --text-light: hsl(0, 0%, 100%);      /* Pure white text */
-    
+
     --bg-page: hsl(210, 20%, 98%);       /* Clean, soft off-white background */
     --bg-card: hsl(0, 0%, 100%);         /* Pure white for card contrast */
-    
+    --bg-subtle: hsl(25, 25%, 98%);
+
     --border-color: hsl(210, 14%, 89%);  /* Soft line breaks */
-    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.06);
-    --hover-shadow: 0 16px 48px 0 rgba(31, 38, 135, 0.12);
-    
-    --radius-sm: 8px;
+    --glass-shadow: 0 1px 3px rgba(80, 50, 20, 0.04), 0 8px 24px rgba(80, 50, 20, 0.05);
+    --hover-shadow: 0 4px 8px rgba(80, 50, 20, 0.04), 0 20px 40px rgba(80, 50, 20, 0.09);
+
+    --radius-sm: 10px;
     --radius-md: 16px;
-    --radius-lg: 24px;
-    
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --radius-lg: 22px;
+    --radius-pill: 999px;
+
+    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Reset and Base Styles */
@@ -63,11 +68,11 @@ body {
 /* Header Section */
 .app-header {
     text-align: center;
-    padding: 40px 20px 20px 20px;
-    background: linear-gradient(135deg, hsl(25, 30%, 94%), hsl(28, 70%, 95%));
+    padding: 44px 20px 32px 20px;
+    background: var(--bg-card);
     border-radius: var(--radius-lg);
     box-shadow: var(--glass-shadow);
-    border: 1px solid rgba(255, 255, 255, 0.6);
+    border: 1px solid var(--border-color);
 }
 
 .logo {
@@ -84,13 +89,10 @@ body {
 }
 
 .app-header h1 {
-    font-size: 2.8rem;
+    font-size: 2.6rem;
     font-weight: 800;
-    color: var(--primary);
-    letter-spacing: -0.5px;
-    background: linear-gradient(to right, var(--primary), var(--accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--text-main);
+    letter-spacing: -0.8px;
 }
 
 .subtitle {
@@ -270,7 +272,7 @@ body {
     color: var(--primary);
     border: 1px solid hsl(25, 30%, 85%);
     padding: 8px 16px;
-    border-radius: 50px;
+    border-radius: var(--radius-pill);
     font-size: 0.95rem;
     font-weight: 600;
     animation: pop-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -435,16 +437,17 @@ body {
 .recipes-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 28px;
 }
 
 /* Recipe Card Styling */
 .recipe-card {
+    position: relative;
     background-color: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    box-shadow: var(--glass-shadow);
     transition: var(--transition);
     display: flex;
     flex-direction: column;
@@ -454,36 +457,63 @@ body {
 .recipe-card:hover {
     box-shadow: var(--hover-shadow);
     transform: translateY(-4px);
-    border-color: hsl(25, 30%, 85%);
+    border-color: hsl(220, 16%, 84%);
+}
+
+.recipe-card.best-match {
+    border: 1.5px solid var(--primary);
+    box-shadow: 0 0 0 4px rgba(169, 116, 79, 0.08), var(--glass-shadow);
+}
+
+.recipe-card.best-match .recipe-card-header {
+    padding-top: 52px;
+}
+
+.recipe-card.best-match::before {
+    content: "🏆 Best Match";
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 1;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    color: var(--text-light);
+    background-color: var(--primary);
+    padding: 5px 12px;
+    border-radius: var(--radius-pill);
+    box-shadow: 0 2px 8px rgba(169, 116, 79, 0.3);
 }
 
 .recipe-card-header {
-    padding: 30px;
-    background: linear-gradient(to right, var(--primary-bg), hsl(0, 0%, 100%));
+    padding: 28px 30px 16px 30px;
+    background-color: var(--bg-subtle);
     border-bottom: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 20px;
 }
 
 .recipe-title-wrapper {
     flex: 1;
-    min-width: 250px;
+    min-width: 220px;
 }
 
 .recipe-card h3 {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     font-weight: 700;
     color: var(--text-main);
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     letter-spacing: -0.3px;
+    line-height: 1.25;
 }
 
 .recipe-meta {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     align-items: center;
     flex-wrap: wrap;
 }
@@ -493,23 +523,21 @@ body {
     align-items: center;
     gap: 6px;
     padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    font-weight: 700;
+    border-radius: var(--radius-pill);
+    font-size: 0.82rem;
+    font-weight: 600;
 }
 
 .badge-calories {
     background-color: var(--accent-light);
     color: var(--accent-dark);
-    border: 1px solid hsl(28, 80%, 90%);
 }
 
 .badge-source {
-    background-color: hsl(210, 16%, 93%);
+    background-color: hsl(220, 16%, 93%);
     color: var(--text-muted);
     text-decoration: none;
     transition: var(--transition);
-    border: 1px solid hsl(210, 14%, 86%);
 }
 
 .badge-source:hover {
@@ -517,20 +545,76 @@ body {
     color: var(--text-light);
 }
 
+/* Match score ring badge */
+.match-score-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.match-score-ring {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid transparent;
+    background-color: var(--bg-card);
+}
+
+.match-score-value {
+    font-size: 0.95rem;
+    font-weight: 800;
+}
+
+.match-score-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.match-score-ring.score-high {
+    border-color: var(--success);
+    background-color: var(--success-bg);
+    color: var(--success);
+}
+
+.match-score-ring.score-medium {
+    border-color: var(--accent);
+    background-color: var(--accent-light);
+    color: var(--accent-dark);
+}
+
+.match-score-ring.score-low {
+    border-color: var(--danger);
+    background-color: var(--danger-bg);
+    color: var(--danger);
+}
+
+.match-reason {
+    padding: 14px 30px 0 30px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
 /* Ingredients Grid Columns */
 .ingredients-columns {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
-    padding: 30px;
-    border-bottom: 1px solid var(--border-color);
-    background-color: hsl(210, 20%, 99%);
+    gap: 20px;
+    padding: 24px 30px;
 }
 
 .ingredients-col {
-    background-color: var(--bg-card);
+    background-color: var(--bg-subtle);
     border-radius: var(--radius-md);
-    padding: 24px;
+    padding: 22px;
     border: 1px solid var(--border-color);
 }
 
@@ -538,47 +622,59 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 18px;
-    padding-bottom: 8px;
-    border-bottom: 2px solid var(--border-color);
+    margin-bottom: 16px;
 }
 
 .col-header h4 {
-    font-size: 1.05rem;
+    font-size: 0.95rem;
     font-weight: 700;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+    color: var(--text-main);
 }
 
-/* Kitchen Box Styling (Have) */
-.kitchen-col {
-    border-left: 4px solid var(--primary);
+.icon-circle {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 800;
+    flex-shrink: 0;
 }
 
-.kitchen-col .col-header h4 {
-    color: var(--primary);
+.icon-have {
+    background-color: var(--success-bg);
+    color: var(--success);
 }
 
-/* Shopping Box Styling (Need) */
-.shopping-col {
-    border-left: 4px solid var(--danger);
-}
-
-.shopping-col .col-header h4 {
+.icon-need {
+    background-color: var(--danger-bg);
     color: var(--danger);
+}
+
+.count-badge {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 2px 9px;
+    border-radius: var(--radius-pill);
 }
 
 /* Copy button for Shopping List */
 .btn-copy {
-    background: none;
-    border: none;
-    font-size: 0.85rem;
-    font-weight: 600;
+    background-color: var(--bg-card);
+    font-size: 0.78rem;
+    font-weight: 700;
     color: var(--text-muted);
     cursor: pointer;
-    padding: 4px 8px;
-    border-radius: 4px;
+    padding: 5px 10px;
+    border-radius: var(--radius-sm);
     border: 1px solid var(--border-color);
     transition: var(--transition);
 }
@@ -593,19 +689,21 @@ body {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 
 .ingredient-item {
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     font-weight: 500;
+    color: var(--text-main);
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 10px;
+    line-height: 1.4;
 }
 
 .item-check {
-    color: var(--primary);
+    color: var(--success);
     font-weight: bold;
 }
 
@@ -614,31 +712,51 @@ body {
     font-weight: bold;
 }
 
-/* Instructions Details List */
+/* Instructions Timeline */
 .instructions-wrapper {
-    padding: 30px;
+    padding: 28px 30px 32px 30px;
 }
 
 .instructions-wrapper h4 {
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     font-weight: 700;
-    margin-bottom: 18px;
+    margin-bottom: 20px;
     color: var(--text-main);
+}
+
+.instructions-hint {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text-muted);
 }
 
 .instructions-list {
     list-style: none;
     counter-reset: steps-counter;
+    position: relative;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 18px;
+    margin-left: 14px;
+}
+
+.instructions-list::before {
+    content: "";
+    position: absolute;
+    left: 13px;
+    top: 4px;
+    bottom: 4px;
+    width: 2px;
+    background-color: var(--border-color);
 }
 
 .instruction-step {
     position: relative;
-    padding-left: 45px;
+    padding-left: 42px;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 0.97rem;
+    line-height: 1.55;
+    color: var(--text-main);
     transition: var(--transition);
     user-select: none;
 }
@@ -649,21 +767,23 @@ body {
     position: absolute;
     left: 0;
     top: 0;
-    width: 28px;
-    height: 28px;
-    background-color: hsl(210, 16%, 93%);
+    width: 27px;
+    height: 27px;
+    background-color: var(--bg-card);
     color: var(--text-muted);
+    border: 2px solid var(--border-color);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 700;
     transition: var(--transition);
+    z-index: 1;
 }
 
 .instruction-step:hover::before {
-    background-color: var(--primary-bg);
+    border-color: var(--primary);
     color: var(--primary);
 }
 
@@ -674,7 +794,8 @@ body {
 }
 
 .instruction-step.completed::before {
-    background-color: var(--primary);
+    background-color: var(--success);
+    border-color: var(--success);
     color: var(--text-light);
     content: "✓";
 }

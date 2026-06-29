@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Hungry Bot 🍳 - AI-Powered Recipe Finder</title>
     <meta name="description" content="Discover real recipes based on ingredients you already have at home. Includes custom step-by-step instructions, shopping lists, and calorie counts.">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
     <!-- Import Premium Fonts from Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -60,7 +61,7 @@
                         <div class="cooking-bubble bubble-3"></div>
                     </div>
                     <h3>Consulting the Chef...</h3>
-                    <p>Searching the web for real recipes using Google Search grounding and calculating ingredients...</p>
+                    <p id="loader-message">Searching the web for real recipes using Google Search grounding. This can take up to a minute&mdash;hang tight!</p>
                 </div>
             </div>
 

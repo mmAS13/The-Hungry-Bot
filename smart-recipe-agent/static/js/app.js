@@ -18,6 +18,11 @@ const errorMessage = document.getElementById('error-message');
 const closeErrorBtn = document.getElementById('close-error-btn');
 const resultsSection = document.getElementById('results-section');
 const recipesGrid = document.getElementById('recipes-grid');
+const loaderMessage = document.getElementById('loader-message');
+
+const DEFAULT_LOADER_MESSAGE = loaderMessage.textContent;
+const SLOW_LOADER_MESSAGE = "Still searching... the AI is reading multiple recipe sites to find the best matches.";
+let loaderMessageTimeout = null;
 
 // ==========================================
 // INGREDIENTS LIST MANAGEMENT
@@ -163,7 +168,13 @@ async function fetchRecipes() {
     recipeLoader.style.display = 'flex';
     findRecipesBtn.disabled = true;
     clearAllBtn.disabled = true;
-    
+    loaderMessage.textContent = DEFAULT_LOADER_MESSAGE;
+
+    // Swap to a "still working" message after 20s so a long wait doesn't feel stuck
+    loaderMessageTimeout = setTimeout(() => {
+        loaderMessage.textContent = SLOW_LOADER_MESSAGE;
+    }, 20000);
+
     // Scroll to the loader to focus user attention
     recipeLoader.scrollIntoView({ behavior: 'smooth', block: 'center' });
     
@@ -194,6 +205,7 @@ async function fetchRecipes() {
         showError(err.message);
     } finally {
         // Restore buttons and hide loading screen
+        clearTimeout(loaderMessageTimeout);
         recipeLoader.style.display = 'none';
         findRecipesBtn.disabled = false;
         clearAllBtn.disabled = false;
@@ -217,6 +229,10 @@ function renderRecipes(recipes) {
         const missingIngredients = recipe.ingredients.filter(ing => !ing.owned);
         
         // Build card inner HTML structure
+        if (index === 0) {
+            card.classList.add('best-match');
+        }
+
         let cardHTML = `
             <div class="recipe-card-header">
                 <div class="recipe-title-wrapper">
@@ -226,13 +242,20 @@ function renderRecipes(recipes) {
                         <a href="${recipe.url}" target="_blank" rel="noopener noreferrer" class="meta-badge badge-source">🌐 View Recipe Source</a>
                     </div>
                 </div>
+                <div class="match-score-wrapper" title="${escapeHtml(recipe.match_reason || '')}">
+                    <div class="match-score-ring ${matchBadgeClass(recipe.match_score)}">
+                        <span class="match-score-value">${recipe.match_score}%</span>
+                    </div>
+                    <span class="match-score-label">Match</span>
+                </div>
             </div>
-            
+            ${recipe.match_reason ? `<p class="match-reason">${escapeHtml(recipe.match_reason)}</p>` : ''}
+
             <div class="ingredients-columns">
                 <!-- Columns for ingredients user HAS -->
                 <div class="ingredients-col kitchen-col">
                     <div class="col-header">
-                        <h4><span>🟢</span> In Your Kitchen</h4>
+                        <h4><span class="icon-circle icon-have">✓</span> In Your Kitchen</h4>
                         <span class="count-badge">${ownedIngredients.length}</span>
                     </div>
                     <ul class="ingredient-list">
@@ -244,29 +267,29 @@ function renderRecipes(recipes) {
                         `).join('')}
                     </ul>
                 </div>
-                
+
                 <!-- Columns for ingredients user NEEDS (Shopping List) -->
                 <div class="ingredients-col shopping-col">
                     <div class="col-header">
-                        <h4><span>🛒</span> Shopping List</h4>
+                        <h4><span class="icon-circle icon-need">+</span> Shopping List</h4>
                         ${missingIngredients.length > 0 ? `<button class="btn-copy" onclick="copyShoppingList(this, ${index})">Copy List</button>` : ''}
                     </div>
                     <ul class="ingredient-list" id="shopping-list-${index}">
-                        ${missingIngredients.length > 0 ? 
+                        ${missingIngredients.length > 0 ?
                             missingIngredients.map(ing => `
                                 <li class="ingredient-item">
                                     <span class="item-cross">＋</span>
                                     <span>${escapeHtml(ing.name)}</span>
                                 </li>
-                            `).join('') : 
+                            `).join('') :
                             `<li class="ingredient-item text-muted"><em>You have everything! 🎉</em></li>`
                         }
                     </ul>
                 </div>
             </div>
-            
+
             <div class="instructions-wrapper">
-                <h4>Instructions (Click steps to check off)</h4>
+                <h4>Instructions <span class="instructions-hint">(click a step to check it off)</span></h4>
                 <ol class="instructions-list">
                     ${recipe.instructions.map(step => `
                         <li class="instruction-step" onclick="toggleStep(this)">
@@ -322,6 +345,15 @@ window.copyShoppingList = function(button, recipeIndex) {
         console.error('Failed to copy text: ', err);
     });
 };
+
+/**
+ * Picks a badge color tier for the match score: high/medium/low.
+ */
+function matchBadgeClass(score) {
+    if (score >= 75) return 'score-high';
+    if (score >= 40) return 'score-medium';
+    return 'score-low';
+}
 
 /**
  * Helper utility to prevent HTML injection by escaping characters.

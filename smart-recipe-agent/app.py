@@ -5,6 +5,7 @@
 
 import os
 import json
+import time
 from flask import Flask, request, jsonify, render_template
 from dotenv import load_dotenv
 
@@ -22,6 +23,30 @@ load_dotenv()
 
 # Initialize the Flask web application
 app = Flask(__name__)
+
+# Gemini's Google Search grounding call is genuinely slow (often 30-90s since it
+# does live web searches per request). We cache results per unique ingredient set
+# for a while so repeated/demo searches come back instantly instead of re-querying.
+RECIPE_CACHE = {}
+CACHE_TTL_SECONDS = 30 * 60
+
+
+def get_cache_key(ingredients):
+    return tuple(sorted(i.lower() for i in ingredients))
+
+
+def get_cached_response(ingredients):
+    entry = RECIPE_CACHE.get(get_cache_key(ingredients))
+    if not entry:
+        return None
+    cached_at, payload = entry
+    if time.time() - cached_at > CACHE_TTL_SECONDS:
+        return None
+    return payload
+
+
+def set_cached_response(ingredients, payload):
+    RECIPE_CACHE[get_cache_key(ingredients)] = (time.time(), payload)
 
 # ==========================================
 # DEFINING THE DATA STRUCTURES (Pydantic Models)
@@ -41,6 +66,8 @@ class Recipe(BaseModel):
     calories: int = Field(description="Estimated calories per serving for this recipe")
     ingredients: List[IngredientStatus] = Field(description="List of all ingredients required, classified as owned or missing")
     instructions: List[str] = Field(description="Step-by-step cooking instructions")
+    match_score: int = Field(description="0-100 score for how well this recipe matches the user's available ingredients")
+    match_reason: str = Field(description="One short sentence explaining the match score")
 
 class RecipeResponse(BaseModel):
     # The final container for all recipes returned.
@@ -50,6 +77,20 @@ class RecipeResponse(BaseModel):
 # ==========================================
 # HELPER FUNCTIONS
 # ==========================================
+
+def score_recipe_match(recipe):
+    """
+    Evaluation layer: recomputes each recipe's match score deterministically
+    from the owned/missing ingredient breakdown, instead of trusting the
+    model's self-reported number. This keeps the score consistent and
+    auditable regardless of what the LLM guessed.
+    """
+    ingredients = recipe.get('ingredients') or []
+    if not ingredients:
+        return 0
+    owned_count = sum(1 for ing in ingredients if ing.get('owned'))
+    return round((owned_count / len(ingredients)) * 100)
+
 
 def get_gemini_client():
     """
@@ -98,6 +139,32 @@ def find_recipes():
     if not user_ingredients or not isinstance(user_ingredients, list):
         return jsonify({'error': 'Please provide a list of ingredients (e.g., chicken, broccoli).'}), 400
 
+    # Reject absurdly large requests before they ever reach the model
+    # (keeps prompts small and prevents accidental runaway API costs).
+    MAX_INGREDIENTS = 25
+    MAX_INGREDIENT_LENGTH = 60
+
+    cleaned_ingredients = []
+    for item in user_ingredients:
+        if not isinstance(item, str):
+            continue
+        item = item.strip()
+        if item and len(item) <= MAX_INGREDIENT_LENGTH:
+            cleaned_ingredients.append(item)
+
+    if not cleaned_ingredients:
+        return jsonify({'error': 'Please provide at least one valid ingredient (max 60 characters each).'}), 400
+
+    if len(cleaned_ingredients) > MAX_INGREDIENTS:
+        return jsonify({'error': f'Please provide at most {MAX_INGREDIENTS} ingredients at a time.'}), 400
+
+    user_ingredients = cleaned_ingredients
+
+    # Serve from cache if we've already searched this exact ingredient set recently
+    cached = get_cached_response(user_ingredients)
+    if cached is not None:
+        return jsonify(cached)
+
     # Format the ingredients into a comma-separated string for our prompt
     ingredients_str = ", ".join(user_ingredients)
 
@@ -126,7 +193,9 @@ def find_recipes():
         "      \"instructions\": [\n"
         "        \"Step 1 explanation\",\n"
         "        \"Step 2 explanation\"\n"
-        "      ]\n"
+        "      ],\n"
+        "      \"match_score\": 80,\n"
+        "      \"match_reason\": \"One short sentence on why this recipe fits the user's ingredients\"\n"
         "    }\n"
         "  ]\n"
         "}"
@@ -164,6 +233,16 @@ def find_recipes():
         response_text = response_text.strip()
         
         recipe_json = json.loads(response_text)
+
+        # Evaluation layer: override the model's self-reported match_score with a
+        # deterministic one, then rank recipes best-match-first.
+        recipes = recipe_json.get('recipes', [])
+        for recipe in recipes:
+            recipe['match_score'] = score_recipe_match(recipe)
+        recipes.sort(key=lambda r: r.get('match_score', 0), reverse=True)
+        recipe_json['recipes'] = recipes
+
+        set_cached_response(user_ingredients, recipe_json)
         return jsonify(recipe_json)
 
     except Exception as e:
@@ -177,5 +256,8 @@ if __name__ == '__main__':
     # Cloud Run requires the app to listen on the port defined by the PORT environment variable.
     # We default to 5000 for local development if the variable is not set.
     port = int(os.environ.get("PORT", 5000))
+    # Debug mode (interactive debugger/reloader) is opt-in only, since it's a remote
+    # code execution risk if ever left on in a deployed environment.
+    debug = os.environ.get("FLASK_DEBUG", "false").lower() == "true"
     # We bind to '0.0.0.0' so the server is reachable from outside the container
-    app.run(debug=True, host='0.0.0.0', port=port)
+    app.run(debug=debug, host='0.0.0.0', port=port)
